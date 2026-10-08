@@ -1,4 +1,4 @@
-package com.task.travelingsalesman;
+package com.task.tsp;
 
 import io.jenetics.EnumGene;
 import io.jenetics.Optimize;
