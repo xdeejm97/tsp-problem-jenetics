@@ -13,7 +13,19 @@ import io.jenetics.engine.EvolutionStatistics;
 import io.jenetics.engine.InvertibleCodec;
 import io.jenetics.engine.Limits;
 
+/**
+ * Osobniki reprezentują permutacje indeksów miast, a ich funkcją
+ * przystosowania jest całkowita długość zamkniętej trasy. Klasa korzysta
+ * z biblioteki Jenetics do inicjalizacji populacji, selekcji, krzyżowania,
+ * mutacji i określenia kryterium zakończenia ewolucji.
+ */
 public class GeneticAlgorithm {
+    /**
+     * Uruchamia ewolucję i wyświetla najlepszą znalezioną trasę oraz statystyki.
+     *
+     * Wynik jest dekodowany z kodera permutacyjnego do tablicy indeksów
+     * miast, po czym indeksy są zamieniane na nazwy miast.
+     */
     public void compute() {
         final var codec = Codecs.ofPermutation(City.N);
         final Engine<EnumGene<Integer>, Double> engine = getGeneEngine(codec);
@@ -37,10 +49,17 @@ public class GeneticAlgorithm {
         System.out.println(sb);
     }
 
+    /**
+     * Przeszukuje kolejne pokolenia i zwraca osobnik o najlepszym fitness.
+     *
+     * @param engine skonfigurowany silnik ewolucyjny Jenetics
+     * @param stats obiekt zbierający statystyki ewolucji i populacji
+     * @return fenotyp osobnika o najmniejszej długości trasy
+     */
     private static Phenotype<EnumGene<Integer>, Double> getBestResult(Engine<EnumGene<Integer>, Double> engine, EvolutionStatistics<Double, ?> stats) {
         return engine.stream()
                 .limit(Limits.bySteadyFitness(150)) // stop po 150 pokoleniach bez poprawy
-                .limit(2000)                        // twardy limit pokoleń
+                .limit(2000)                                 // twardy limit pokoleń
                 .peek(stats)
                 .peek(r -> {
                     if (r.generation() % 25 == 0) {
@@ -51,6 +70,12 @@ public class GeneticAlgorithm {
                 .collect(EvolutionResult.toBestPhenotype());
     }
 
+    /**
+     * Tworzy silnik algorytmu genetycznego z parametrami potrzebnymi dla TSP.
+     *
+     * @param codec koder odwzorowujący osobnika na permutację indeksów miast
+     * @return skonfigurowany silnik minimalizujący długość trasy
+     */
     private static Engine<EnumGene<Integer>, Double> getGeneEngine(InvertibleCodec<int[], EnumGene<Integer>> codec) {
         return Engine
                 .builder(City::tourLength, codec)

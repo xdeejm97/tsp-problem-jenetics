@@ -2,6 +2,13 @@ package com.task.tsp;
 
 import lombok.Data;
 
+/**
+ * Dostarcza dane instancji problemu komiwojażera oraz funkcję oceny trasy.
+ *
+ * Klasa przechowuje nazwy 16 miast, ich współrzędne geograficzne i macierz
+ * odległości obliczaną statycznie metodą haversine. Odległości są podawane
+ * w kilometrach.
+ */
 @Data
 public class City {
 
@@ -30,7 +37,13 @@ public class City {
     }
   }
 
-  /** Odległość po sferze Ziemi (km). */
+  /**
+   * Oblicza odległość ortodromiczną pomiędzy dwoma punktami na sferze Ziemi.
+   *
+   * @param a współrzędne pierwszego punktu: szerokość i długość geograficzna
+   * @param b współrzędne drugiego punktu: szerokość i długość geograficzna
+   * @return odległość pomiędzy punktami w kilometrach
+   */
   private static double haversine(double[] a, double[] b) {
     final double r = 6371.0;
     double dLat = Math.toRadians(b[0] - a[0]);
@@ -41,7 +54,15 @@ public class City {
     return 2 * r * Math.asin(Math.sqrt(h));
   }
 
-  /** Funkcja przystosowania: długość cyklu Hamiltona. */
+  /**
+   * Oblicza długość zamkniętej trasy przechodzącej przez wszystkie miasta.
+   *
+   * Ostatnia krawędź łączy ostatnie miasto z pierwszym, dzięki czemu tablica
+   * reprezentuje cykl Hamiltona. Mniejsza wartość oznacza lepsze rozwiązanie.
+   *
+   * @param tour permutacja indeksów miast odwiedzanych w kolejności obliczenia
+   * @return całkowita długość trasy w kilometrach
+   */
   public static double tourLength(final int[] tour) {
     double sum = 0;
     for (int i = 0; i < tour.length; i++) {

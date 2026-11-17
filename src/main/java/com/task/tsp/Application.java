@@ -8,8 +8,7 @@ package com.task.tsp;
  * Fitness: długość zamkniętej trasy w km (minimalizowana).
  */
 public class Application {
-
-  static void main() {
+   void main() {
     GeneticAlgorithm ga = new GeneticAlgorithm();
     ga.compute();
   }
